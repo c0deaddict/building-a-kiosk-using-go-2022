@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="312px" preserveAspectRatio="none" style="width:678px;height:312px;background:#FFFFFF;" version="1.1" viewBox="0 0 678 312" width="678px" zoomAndPan="magnify"><defs/><g><!--MD5=[ae6fa260e02a503e68fd7006963b1098]
+entity chromium--><g id="elem_chromium"><rect fill="#F1F1F1" height="46.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="109" x="78.5" y="10.5"/><rect fill="#F1F1F1" height="10" style="stroke:#181818;stroke-width:0.5;" width="15" x="167.5" y="15.5"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="165.5" y="17.5"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="165.5" y="21.5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="69" x="93.5" y="43.4951">chromium</text></g><!--MD5=[70c136652b6f0c4c5f3dd80f6b51c5a9]
+entity display--><g id="elem_display"><rect fill="#F1F1F1" height="46.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="87" x="346.5" y="10.5"/><rect fill="#F1F1F1" height="10" style="stroke:#181818;stroke-width:0.5;" width="15" x="413.5" y="15.5"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="411.5" y="17.5"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="411.5" y="21.5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="47" x="361.5" y="43.4951">display</text></g><!--MD5=[c7d799976e045ecf3ac0fc44ca22f344]
+entity hal--><g id="elem_hal"><rect fill="#F1F1F1" height="46.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="60" x="360" y="138"/><rect fill="#F1F1F1" height="10" style="stroke:#181818;stroke-width:0.5;" width="15" x="400" y="143"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="398" y="145"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="398" y="149"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="20" x="375" y="170.9951">hal</text></g><!--MD5=[41bf35c5d8a826a6604e50a3b70afd9b]
+entity Buttons--><g id="elem_Buttons"><ellipse cx="243" cy="274" fill="#F1F1F1" rx="8" ry="8" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="55" x="215.5" y="303.9951">Buttons</text></g><!--MD5=[f44fa5adabb583999c6580fc2cc8b807]
+entity Motion--><g id="elem_Motion"><ellipse cx="344" cy="274" fill="#F1F1F1" rx="8" ry="8" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="47" x="320.5" y="303.9951">Motion</text></g><!--MD5=[d02ff703ee2329091c0dcc45cd6aeeee]
+entity LEDS--><g id="elem_LEDS"><ellipse cx="437" cy="274" fill="#F1F1F1" rx="8" ry="8" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="36" x="419" y="303.9951">LEDS</text></g><!--MD5=[118f42602524ad482f02b27ef22fc383]
+entity D--><g id="elem_D"><ellipse cx="555" cy="274" fill="#F1F1F1" rx="8" ry="8" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="96" x="507" y="303.9951">Display power</text></g><g id="elem_GMN15"><path d="M6,141 L6,181.2656 A0,0 0 0 0 6,181.2656 L260,181.2656 A0,0 0 0 0 260,181.2656 L260,151 L250,141 L137,141 L133,56.65 L129,141 L6,141 A0,0 0 0 0 6,141 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M250,141 L250,151 L260,151 L250,141 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="94" x="12" y="158.0669">React frontend</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="233" x="12" y="173.1997">Listens on websocket for commands</text></g><g id="elem_GMN18"><path d="M455.5,141 L455.5,157 L420.06,161 L455.5,165 L455.5,181.2656 A0,0 0 0 0 455.5,181.2656 L648.5,181.2656 A0,0 0 0 0 648.5,181.2656 L648.5,151 L638.5,141 L455.5,141 A0,0 0 0 0 455.5,141 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M638.5,141 L638.5,151 L648.5,151 L638.5,141 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="172" x="461.5" y="158.0669">Hardware abstraction layer</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="80" x="461.5" y="173.1997">Runs as root</text></g><g id="elem_GMN21"><path d="M469,6 L469,29.5 L433.59,33.5 L469,37.5 L469,61.3984 A0,0 0 0 0 469,61.3984 L671,61.3984 A0,0 0 0 0 671,61.3984 L671,16 L661,6 L469,6 A0,0 0 0 0 469,6 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M661,6 L661,16 L671,16 L661,6 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="181" x="475" y="23.0669">Controls content on displays</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="107" x="475" y="38.1997">Reacts to events</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="147" x="475" y="53.3325">Runs as restricted user</text></g><!--MD5=[e9255c03688db5712314c6604c13cf72]
+link chromium to display--><g id="link_chromium_display"><path d="M192.56,33.5 C237.69,33.5 298.92,33.5 341.17,33.5 " fill="none" id="chromium-display" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#181818" points="346.23,33.5,337.23,29.5,341.23,33.5,337.23,37.5,346.23,33.5" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="187.5,33.5,196.5,37.5,192.5,33.5,196.5,29.5,187.5,33.5" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="122" x="206" y="26.5669">HTTP + WebSocket</text></g><!--MD5=[802adfd34327407ce38da04a853831dd]
+link display to hal--><g id="link_display_hal"><path d="M390,61.92 C390,82.85 390,111.56 390,132.5 " fill="none" id="display-hal" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#181818" points="390,137.65,394,128.65,390,132.65,386,128.65,390,137.65" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="390,56.65,386,65.65,390,61.65,394,65.65,390,56.65" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="141" x="391" y="104.0669">gRPC over unix socket</text></g><!--MD5=[9e1986e51497f85501489b121d156f67]
+reverse link hal to Buttons--><g id="link_hal_Buttons"><path d="M356.57,187.24 C322.81,212.74 272.8,250.5 252.29,265.99 " fill="none" id="hal-backto-Buttons" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#181818" points="360.61,184.2,351.015,186.4219,356.6169,187.2091,355.8296,192.8109,360.61,184.2" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[0520571ff80fb55f1863d8f78ad42148]
+reverse link hal to Motion--><g id="link_hal_Motion"><path d="M378.8,189.03 C368.48,213.93 353.81,249.32 347.32,265 " fill="none" id="hal-backto-Motion" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#181818" points="380.8,184.2,373.6566,190.9802,378.884,188.8183,381.0459,194.0458,380.8,184.2" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[c16574cc6a79c90d0dc3064b5a88bc93]
+link hal to LEDS--><g id="link_hal_LEDS"><path d="M399.4,184.2 C409.05,206.98 423.73,241.65 431.58,260.21 " fill="none" id="hal-to-LEDS" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#181818" points="433.61,265,433.7931,255.1528,431.6646,260.394,426.4235,258.2655,433.61,265" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[8eeba4594d5b877d5f203e30cf128fbf]
+link hal to D--><g id="link_hal_D"><path d="M420.26,182.36 C456.5,206.73 515.57,246.47 541.77,264.1 " fill="none" id="hal-to-D" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#181818" points="545.97,266.93,540.7334,258.5887,541.8208,264.14,536.2694,265.2274,545.97,266.93" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[38504c3601ca84e69ea7fe239d07a8cd]
+@startuml
+[chromium] <.right.> [display] : HTTP + WebSocket
+[display] <..> [hal] : gRPC over unix socket
+[hal] <.. Buttons
+[hal] <.. Motion
+[hal] ..> LEDS
+
+interface "Display power" as D
+[hal] ..> D
+
+note bottom of [chromium]
+  React frontend
+  Listens on websocket for commands
+end note
+
+note right of [hal]
+  Hardware abstraction layer
+  Runs as root
+end note
+
+note right of [display]
+  Controls content on displays
+  Reacts to events
+  Runs as restricted user
+end note
+@enduml
+
+PlantUML version 1.2022.5(Sat Apr 30 12:55:52 CEST 2022)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

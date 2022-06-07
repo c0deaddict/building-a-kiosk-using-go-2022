@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Building a kiosk using Go</title>
+<meta name="author" content="Jos van Bakel"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="./reveal.js-4.3.1/dist/reveal.css"/>
+
+<link rel="stylesheet" href="./reveal.js-4.3.1/dist/theme/black.css" id="theme"/>
+
+<link rel="stylesheet" href="custom.css"/>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide" data-background="./images/title-screen.jpg"><h1 class="title">Building a kiosk using Go</h1>
+<h2 class="author">Jos van Bakel</h2>
+</section>
+
+<section>
+<section id="slide-org422de50">
+<h2 id="org422de50">About me</h2>
+<ul>
+<li class="fragment appear">Nerd</li>
+<li class="fragment appear">Electronics hobbyist</li>
+<li class="fragment appear">System engineer at Spindle</li>
+<li class="fragment appear">NixOS fanboy</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orga39d74e">
+<h2 id="orga39d74e">Agenda</h2>
+<aside class="notes">
+<p>
+I've build a kiosk using Go. Here are some of my learnings.
+</p>
+
+<p>
+Confession: I use this in my home, not really "on the job", but you <b>could</b> use this on the job! ;)
+</p>
+
+</aside>
+
+<ul>
+<li>What is a kiosk?</li>
+<li>How does it work?</li>
+<li>Why Go?</li>
+<li>Learnings</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org6938e61">
+<h2 id="org6938e61">What is a kiosk?</h2>
+
+<div id="orgcd89c09" class="figure">
+<p><img src="./images/dashboard.jpg" alt="dashboard.jpg" width="75%" height="75%" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orga509fe0">
+<h2 id="orga509fe0">What is a kiosk?</h2>
+
+<div id="orgf875186" class="figure">
+<p><img src="./images/photos.jpg" alt="photos.jpg" width="75%" height="75%" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgadd6aa1">
+<h2 id="orgadd6aa1">What is a kiosk?</h2>
+
+<div id="org0f76d0a" class="figure">
+<p><img src="./images/leds.jpg" alt="leds.jpg" width="75%" height="75%" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org3343b90">
+<h2 id="org3343b90">What is a kiosk?</h2>
+
+<div id="org7aa8422" class="figure">
+<p><img src="./images/back.jpg" alt="back.jpg" width="75%" height="75%" />
+</p>
+</div>
+
+<aside class="notes">
+<p>
+backside:
+</p>
+<ul>
+<li>raspberry pi</li>
+<li>pic from back</li>
+<li>yellow/red buttons</li>
+<li>motion sensor (pir)</li>
+<li>led strip</li>
+
+</ul>
+
+</aside>
+
+</section>
+</section>
+<section>
+<section id="slide-orgbf0bd56">
+<h2 id="orgbf0bd56">How does it work?</h2>
+<aside class="notes">
+<ul>
+<li>over engineered.. for learning</li>
+<li>mention: cage (wayland) <a href="https://www.hjdskes.nl/projects/cage/">https://www.hjdskes.nl/projects/cage/</a></li>
+
+</ul>
+
+</aside>
+
+
+<div id="org783b048" class="figure">
+<p><img src="images/archtecture.svg" alt="archtecture.svg" class="org-svg" width="75%" height="75%" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgb9cb092">
+<h2 id="orgb9cb092">Why Go?</h2>
+<aside class="notes">
+<ul>
+<li>first version was in Python, worked okay for a few years, but adding LEDs was difficult.</li>
+<li>problems would surface during runtime =&gt; not a compiled language</li>
+<li>updating the OS (Raspbian) broke stuff from time to time</li>
+<li>now build on NixOS, fully declarative</li>
+<li>also tried Rust, but that is difficult with the type signatures, and i missed channels</li>
+
+<li>and now i'm going to talk about the learnings i had from this project.</li>
+
+</ul>
+
+</aside>
+
+<ul>
+<li>Nice language: small syntax and typed</li>
+<li>Good libraries for GPIO and WS2812</li>
+<li>Cross compiles to <code>aarch64-linux</code></li>
+<li>Good Nix support</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org25b5284">
+<h2 id="org25b5284">gRPC</h2>
+<aside class="notes">
+<p>
+first learning is that grpc is awesome!
+</p>
+
+<ul>
+<li>streams can be be passed from client to server</li>
+<li>and/or can be returned from the server to client</li>
+<li>streams run until either side closes the stream</li>
+<li>in the next slide i'll show an example of i used a stream.</li>
+
+</ul>
+
+</aside>
+
+<ul>
+<li>gRPC Remote Procedure Calls</li>
+<li>Communication between <code>hal</code> and <code>display</code></li>
+<li>Describe protocol in <code>protobuf</code></li>
+<li>Generate client/server code for almost any language</li>
+<li>gRPC supports streams!</li>
+
+</ul>
+
+</section>
+<section id="slide-orge301226">
+<h3 id="orge301226">protobuf</h3>
+<aside class="notes">
+<p>
+the protocol is defined in protobuf.
+</p>
+
+</aside>
+
+<div class="org-src-container">
+
+<pre  class="src src-protobuf"   ><code trim><span style="color: #b294bb;">service</span> <span style="color: #f0c674;">Hal</span> {
+  <span style="color: #b294bb;">rpc</span> <span style="color: #81a2be;">WatchEvents</span>(<span style="color: #de935f;">google</span>.<span style="color: #de935f;">protobuf</span>.Empty) <span style="color: #b294bb;">returns</span> (stream Event) {}
+  <span style="color: #969896;">// </span><span style="color: #969896;">...</span>
+}
+
+<span style="color: #b294bb;">message</span> <span style="color: #f0c674;">Event</span> {
+  <span style="color: #f0c674;">EventSource</span> <span style="color: #cc6666;">source</span> = 1;
+  <span style="color: #f0c674;">bool</span> <span style="color: #cc6666;">state</span> = 2;
+}
+
+<span style="color: #b294bb;">enum</span> <span style="color: #f0c674;">EventSource</span> {
+  Pir = 0 [(name) = <span style="color: #b5bd68;">"pir"</span>];
+  RedButton = 1 [(name) = <span style="color: #b5bd68;">"red_button"</span>];
+  YellowButton = 2 [(name) = <span style="color: #b5bd68;">"yellow_button"</span>];
+}
+</code></pre>
+</div>
+
+</section>
+<section id="slide-orgcf1cb8f">
+<h3 id="orgcf1cb8f">Server</h3>
+<aside class="notes">
+<ul>
+<li>listens on unix socket</li>
+<li>tcp can also be used as a transport for grpc</li>
+
+</ul>
+
+</aside>
+
+<div class="org-src-container">
+
+<pre  class="src src-go"   ><code trim><span style="color: #b294bb;">func</span> (<span style="color: #cc6666;">h</span> <span style="color: #b294bb;">*</span><span style="color: #f0c674;">Hal</span>) <span style="color: #81a2be; font-style: italic;">Run</span>() {
+    <span style="color: #cc6666;">addr</span>, <span style="color: #cc6666;">err</span> <span style="color: #b294bb;">:=</span> net.<span style="color: #81a2be; font-style: italic;">ResolveUnixAddr</span>(<span style="color: #b5bd68;">"unix"</span>, h.<span style="color: #de935f; font-style: italic;">SocketPath</span>)
+    <span style="color: #cc6666;">lis</span>, <span style="color: #cc6666;">err</span> <span style="color: #b294bb;">:=</span> net.<span style="color: #81a2be; font-style: italic;">ListenUnix</span>(<span style="color: #b5bd68;">"unix"</span>, addr)
+    h.<span style="color: #de935f; font-style: italic;">server</span> <span style="color: #b294bb;">=</span> grpc.<span style="color: #81a2be; font-style: italic;">NewServer</span>()
+    pb.<span style="color: #81a2be; font-style: italic;">RegisterHalServer</span>(h.<span style="color: #de935f; font-style: italic;">server</span>, h)
+    h.<span style="color: #de935f; font-style: italic;">server</span>.<span style="color: #81a2be; font-style: italic;">Serve</span>(lis)
+}
+
+<span style="color: #b294bb;">func</span> (<span style="color: #cc6666;">h</span> <span style="color: #b294bb;">*</span><span style="color: #f0c674;">Hal</span>) <span style="color: #81a2be; font-style: italic;">WatchEvents</span>(<span style="color: #cc6666;">_</span> <span style="color: #b294bb;">*</span>emptypb.<span style="color: #f0c674;">Empty</span>, <span style="color: #cc6666;">stream</span> pb.<span style="color: #f0c674;">Hal_WatchEventsServer</span>) <span style="color: #f0c674;">error</span> {
+    h.<span style="color: #81a2be; font-style: italic;">addWatcher</span>(stream)
+    <span style="color: #b294bb;">&lt;-</span>stream.<span style="color: #81a2be; font-style: italic;">Context</span>().<span style="color: #81a2be; font-style: italic;">Done</span>()
+    h.<span style="color: #81a2be; font-style: italic;">removeWatcher</span>(stream)
+    <span style="color: #b294bb;">return</span> <span style="color: #8abeb7;">nil</span>
+}
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org6ce39c5">
+<h3 id="org6ce39c5">Publish event</h3>
+<aside class="notes">
+<p>
+note: left out locking on h.watchers for brevity.
+gpiod library is amazing, native go library for accessing gpio
+it even has debouncing build in: gpiod.WithDebounce(delay)
+<a href="https://github.com/warthog618/gpiod">https://github.com/warthog618/gpiod</a>
+</p>
+
+</aside>
+
+<div class="org-src-container">
+
+<pre  class="src src-go"   ><code trim>gpiod.<span style="color: #81a2be; font-style: italic;">RequestLine</span>(gpioDevice, pirPin,
+    gpiod.<span style="color: #de935f; font-style: italic;">WithBothEdges</span>,
+    gpiod.<span style="color: #81a2be; font-style: italic;">WithEventHandler</span>(<span style="color: #b294bb;">func</span>(<span style="color: #cc6666;">evt</span> gpiod.<span style="color: #f0c674;">LineEvent</span>) {
+        <span style="color: #cc6666;">event</span> <span style="color: #b294bb;">:=</span> pb.<span style="color: #f0c674;">Event</span>{
+            Source: pb.<span style="color: #de935f; font-style: italic;">EventSource_Pir</span>,
+            State:  evt.<span style="color: #de935f; font-style: italic;">Type</span> <span style="color: #b294bb;">==</span> gpiod.<span style="color: #de935f; font-style: italic;">LineEventRisingEdge</span>,
+        }
+        <span style="color: #b294bb;">for</span> <span style="color: #cc6666;">_</span>, <span style="color: #cc6666;">w</span> <span style="color: #b294bb;">:=</span> <span style="color: #b294bb;">range</span> h.<span style="color: #de935f; font-style: italic;">watchers</span> {
+            w.<span style="color: #81a2be; font-style: italic;">Send</span>(<span style="color: #b294bb;">&amp;</span>event)
+        }
+    }))
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org8a672df">
+<h3 id="org8a672df">Client</h3>
+<div class="org-src-container">
+
+<pre  class="src src-go"   ><code trim><span style="color: #cc6666;">conn</span>, <span style="color: #cc6666;">err</span> <span style="color: #b294bb;">:=</span> grpc.<span style="color: #81a2be; font-style: italic;">Dial</span>(
+    d.<span style="color: #de935f; font-style: italic;">config</span>.<span style="color: #de935f; font-style: italic;">HalSocketPath</span>,
+    grpc.<span style="color: #81a2be; font-style: italic;">WithInsecure</span>(),
+    grpc.<span style="color: #81a2be; font-style: italic;">WithDialer</span>(<span style="color: #b294bb;">func</span>(<span style="color: #cc6666;">addr</span> <span style="color: #f0c674;">string</span>, <span style="color: #cc6666;">timeout</span> time.<span style="color: #f0c674;">Duration</span>) (net.<span style="color: #f0c674;">Conn</span>, <span style="color: #f0c674;">error</span>) {
+        <span style="color: #b294bb;">return</span> net.<span style="color: #81a2be; font-style: italic;">DialTimeout</span>(<span style="color: #b5bd68;">"unix"</span>, addr, timeout)
+    }))
+
+<span style="color: #b294bb;">defer</span> conn.<span style="color: #81a2be; font-style: italic;">Close</span>()
+d.<span style="color: #de935f; font-style: italic;">hal</span> <span style="color: #b294bb;">=</span> pb.<span style="color: #81a2be; font-style: italic;">NewHalClient</span>(conn)
+
+<span style="color: #969896;">// Watch events from HAL and process them.</span>
+<span style="color: #cc6666;">stream</span>, <span style="color: #cc6666;">err</span> <span style="color: #b294bb;">:=</span> d.<span style="color: #de935f; font-style: italic;">hal</span>.<span style="color: #81a2be; font-style: italic;">WatchEvents</span>(ctx, <span style="color: #b294bb;">&amp;</span>emptypb.<span style="color: #f0c674;">Empty</span>{})
+<span style="color: #b294bb;">for</span> {
+    <span style="color: #cc6666;">event</span>, <span style="color: #cc6666;">err</span> <span style="color: #b294bb;">:=</span> stream.<span style="color: #81a2be; font-style: italic;">Recv</span>()
+    <span style="color: #969896;">// Handle event.</span>
+}
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org029e4c3">
+<h3 id="org029e4c3">Go generate</h3>
+<div class="org-src-container">
+<label class="org-src-name"><code>hal_proto/generate.go</code></label>
+<pre  class="src src-go"   data-wrap='wrap'><code trim><span style="color: #969896;">//go:generate protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative hal_proto.proto</span>
+<span style="color: #b294bb;">package</span> hal_proto
+</code></pre>
+</div>
+
+<div class="org-src-container">
+<label class="org-src-name">then run:</label>
+<pre  class="src src-bash"   ><code trim><span style="color: #81a2be;">go</span> generate <span style="color: #de935f;">-x</span> <span style="color: #de935f;">-v</span> hal_proto/generate.go
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org850ef38">
+<h2 id="org850ef38">Websocket server</h2>
+<aside class="notes">
+<ul>
+<li>you probably already know Gin Gonic, it's an awesome web framework, and it's very fast.</li>
+<li>Gin doesn't have support for websockets,</li>
+<li>but Gorilla can be used for that.</li>
+
+</ul>
+
+</aside>
+
+<div class="org-src-container">
+
+<pre  class="src src-go"   ><code trim>r.<span style="color: #81a2be; font-style: italic;">GET</span>(<span style="color: #b5bd68;">"/ws"</span>, <span style="color: #b294bb;">func</span>(<span style="color: #cc6666;">c</span> <span style="color: #b294bb;">*</span>gin.<span style="color: #f0c674;">Context</span>) {
+  <span style="color: #cc6666;">upgrader</span> <span style="color: #b294bb;">:=</span> websocket.<span style="color: #f0c674;">Upgrader</span>{}
+  <span style="color: #cc6666;">conn</span>, <span style="color: #cc6666;">err</span> <span style="color: #b294bb;">:=</span> upgrader.<span style="color: #81a2be; font-style: italic;">Upgrade</span>(c.<span style="color: #de935f; font-style: italic;">Writer</span>, c.<span style="color: #de935f; font-style: italic;">Request</span>, <span style="color: #8abeb7;">nil</span>)
+  <span style="color: #b294bb;">defer</span> conn.<span style="color: #81a2be; font-style: italic;">Close</span>()
+  d.<span style="color: #81a2be; font-style: italic;">addClient</span>(conn)
+
+  <span style="color: #b294bb;">for</span> {
+      <span style="color: #cc6666;">messageType</span>, <span style="color: #cc6666;">message</span>, <span style="color: #cc6666;">err</span> <span style="color: #b294bb;">:=</span> conn.<span style="color: #81a2be; font-style: italic;">ReadMessage</span>()
+      <span style="color: #b294bb;">if</span> websocket.<span style="color: #81a2be; font-style: italic;">IsCloseError</span>(err, websocket.<span style="color: #de935f; font-style: italic;">CloseGoingAway</span>, <span style="color: #b294bb;">...</span>) {
+          <span style="color: #b294bb;">break</span>
+      }
+      <span style="color: #969896;">// Handle message.</span>
+  }
+
+  d.<span style="color: #81a2be; font-style: italic;">removeClient</span>(conn)
+})
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orge60a713">
+<h2 id="orge60a713"><del>Streaming</del> files over HTTP</h2>
+<aside class="notes">
+<ul>
+<li>added support for showing video's on the display</li>
+<li>Gin's r.StaticFS doesn't support streaming ranges, thus the browser will fetch the entire video file before playing.</li>
+
+</ul>
+
+</aside>
+
+<div class="org-src-container">
+
+<pre  class="src src-go"   ><code trim>r.<span style="color: #81a2be; font-style: italic;">StaticFS</span>(<span style="color: #b5bd68;">"/video"</span>, http.<span style="color: #81a2be; font-style: italic;">Dir</span>(d.<span style="color: #de935f; font-style: italic;">config</span>.<span style="color: #de935f; font-style: italic;">VideosPath</span>))
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org415e30c">
+<h3 id="org415e30c">Streaming with http.ServeFile</h3>
+<aside class="notes">
+<ul>
+<li>Go's builtin webserver does support this! with <code>http.ServeFile</code></li>
+<li>getting video acceleration to work on the Pi (in 64bit) proved too difficult</li>
+
+</ul>
+
+</aside>
+
+<div class="org-src-container">
+
+<pre  class="src src-go"   ><code trim>r.<span style="color: #81a2be; font-style: italic;">GET</span>(<span style="color: #b5bd68;">"/video/:name"</span>, <span style="color: #b294bb;">func</span>(<span style="color: #cc6666;">c</span> <span style="color: #b294bb;">*</span>gin.<span style="color: #f0c674;">Context</span>) {
+    <span style="color: #cc6666;">name</span> <span style="color: #b294bb;">:=</span> c.<span style="color: #81a2be; font-style: italic;">Param</span>(<span style="color: #b5bd68;">"name"</span>)
+    <span style="color: #cc6666;">filepath</span> <span style="color: #b294bb;">:=</span> path.<span style="color: #81a2be; font-style: italic;">Join</span>(d.<span style="color: #de935f; font-style: italic;">config</span>.<span style="color: #de935f; font-style: italic;">VideosPath</span>, name)
+    http.<span style="color: #81a2be; font-style: italic;">ServeFile</span>(c.<span style="color: #de935f; font-style: italic;">Writer</span>, c.<span style="color: #de935f; font-style: italic;">Request</span>, filepath)
+})
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org2eb133d">
+<h2 id="org2eb133d">Embedded static frontend</h2>
+<aside class="notes">
+<ul>
+<li>using go:embed frontend files can be embedded in the go binary.</li>
+<li>probably not a good idea for production (use a static file server or CDN)</li>
+<li>but great for these simple projects!</li>
+
+</ul>
+
+</aside>
+
+<ul>
+<li>Run <code>esbuild</code> before <code>go build</code>.</li>
+<li>In the frontend directory there is one go file:</li>
+
+</ul>
+
+<div class="org-src-container">
+
+<pre  class="src src-go"   ><code trim><span style="color: #b294bb;">package</span> frontend
+
+<span style="color: #b294bb;">import</span> (
+    <span style="color: #b5bd68;">"embed"</span>
+)
+
+<span style="color: #969896;">//go:embed dist/**</span>
+<span style="color: #b294bb;">var</span> <span style="color: #cc6666;">Assets</span> embed.<span style="color: #f0c674;">FS</span>
+</code></pre>
+</div>
+
+
+</section>
+<section id="slide-org3961214">
+<h3 id="org3961214">Serve static files</h3>
+<aside class="notes">
+<ul>
+<li>frontend.Assets contains all files in the dist folder.</li>
+<li>they can be served with <code>http.FS</code></li>
+
+</ul>
+
+</aside>
+
+<div class="org-src-container">
+
+<pre  class="src src-go"   ><code trim><span style="color: #cc6666;">fsys</span>, <span style="color: #cc6666;">err</span> <span style="color: #b294bb;">:=</span> fs.<span style="color: #81a2be; font-style: italic;">Sub</span>(frontend.<span style="color: #de935f; font-style: italic;">Assets</span>, <span style="color: #b5bd68;">"dist"</span>)
+r.<span style="color: #f0c674;">NoRoute</span>(<span style="color: #b294bb;">func</span>(<span style="color: #cc6666;">c</span> <span style="color: #b294bb;">*</span>gin.<span style="color: #f0c674;">Context</span>) {
+    c.<span style="color: #81a2be; font-style: italic;">FileFromFS</span>(c.<span style="color: #de935f; font-style: italic;">Request</span>.<span style="color: #de935f; font-style: italic;">URL</span>.<span style="color: #de935f; font-style: italic;">Path</span>, http.<span style="color: #81a2be; font-style: italic;">FS</span>(fsys))
+})
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org2b86c9b">
+<h2 id="org2b86c9b">Nix(OS)</h2>
+<aside class="notes">
+<ul>
+<li>linux distribution</li>
+<li>build on the Nix package manager</li>
+<li>reproducible builds and deployments</li>
+<li>why for this project?
+<ul>
+<li>most of my systems run NixOS</li>
+<li>declarative</li>
+<li>wireless password</li>
+<li>samba mounts</li>
+<li>all baked into one image</li>
+<li>one command to build</li>
+<li>can build on x86 (with cross compilation or emulation in qemu)</li>
+
+</ul></li>
+
+</ul>
+
+</aside>
+
+
+<div id="org022f325" class="figure">
+<p><img src="./images/nix.svg" alt="nix.svg" class="org-svg" />
+</p>
+</div>
+
+</section>
+<section id="slide-org2b9a968">
+<h3 id="org2b9a968">Nix package</h3>
+<aside class="notes">
+<ul>
+<li>includes system libraries (like rpi<sub>ws281x</sub>)</li>
+<li>can compose different builders</li>
+<li>"make" on steroids</li>
+
+</ul>
+
+</aside>
+
+<div class="org-src-container">
+
+<pre  class="src src-nix"   ><code trim>buildGoModule <span style="color: #b294bb;">rec</span> {
+  <span style="color: #cc6666;">name</span> = <span style="color: #b5bd68;">"neon-display"</span>;
+  <span style="color: #cc6666;">version</span> = <span style="color: #b5bd68;">"0.0.1"</span>;
+  <span style="color: #cc6666;">src</span> = <span style="color: #de935f;">../..</span>;
+  <span style="color: #cc6666;">vendorSha256</span> = <span style="color: #b5bd68;">"sha256-WqdXu2yO..."</span>;
+  <span style="color: #cc6666;">propagatedBuildInputs</span> = [ rpi_ws281x ];
+  <span style="color: #cc6666;">subPackages</span> = [ <span style="color: #b5bd68;">"cmd/hal"</span> <span style="color: #b5bd68;">"cmd/display"</span> ];
+
+  <span style="color: #cc6666;">NIX_CFLAGS_COMPILE</span> = <span style="color: #b5bd68;">"-I</span><span style="color: #81a2be;">${</span>rpi_ws281x<span style="color: #81a2be;">}</span><span style="color: #b5bd68;">/include/ws2811"</span>;
+  <span style="color: #cc6666;">NIX_LDFLAGS_COMPILE</span> = <span style="color: #b5bd68;">"-L</span><span style="color: #81a2be;">${</span>rpi_ws281x<span style="color: #81a2be;">}</span><span style="color: #b5bd68;">/lib"</span>;
+
+  <span style="color: #cc6666;">preBuild</span> = <span style="color: #b5bd68;">''</span>
+<span style="color: #b5bd68;">    cp -r </span><span style="color: #81a2be;">${</span>neon-display-frontend<span style="color: #81a2be;">}</span><span style="color: #b5bd68;"> frontend/dist</span>
+<span style="color: #b5bd68;">  ''</span>;
+}
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org5fe24bc">
+<h3 id="org5fe24bc">NixOS module</h3>
+<aside class="notes">
+<ul>
+<li>module abstracts deployment configuration</li>
+<li>like salt/puppet/etc.</li>
+<li>creates two systemd units: neon-display and neon-display-hal</li>
+
+</ul>
+
+</aside>
+
+<div class="org-src-container">
+
+<pre  class="src src-nix"   ><code trim><span style="color: #cc6666;">services.neon-display</span> = {
+  <span style="color: #cc6666;">enable</span> = <span style="color: #8abeb7;">true</span>;
+  <span style="color: #cc6666;">user</span> = <span style="color: #b5bd68;">"display"</span>;
+  <span style="color: #cc6666;">group</span> = <span style="color: #b5bd68;">"users"</span>;
+  <span style="color: #cc6666;">settings</span> = {
+    <span style="color: #cc6666;">web_bind</span> = <span style="color: #b5bd68;">"0.0.0.0"</span>;
+    <span style="color: #cc6666;">photos_path</span> = <span style="color: #b5bd68;">"/nas/Pics/Photos"</span>;
+    <span style="color: #cc6666;">off_timeout</span> = 120; <span style="color: #969896;"># seconds</span>
+    <span style="color: #cc6666;">sites</span> = [
+      {
+        <span style="color: #cc6666;">title</span> = <span style="color: #b5bd68;">"Live"</span>;
+        <span style="color: #cc6666;">url</span> = <span style="color: #b5bd68;">"http://mon.home.lan/..."</span>;
+      }
+    ];
+  };
+};
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org8c8c557">
+<h3 id="org8c8c557">Deployment</h3>
+<aside class="notes">
+<p>
+one command to:
+</p>
+<ul>
+<li>build Go package</li>
+<li>build React frontend</li>
+<li>create two systemd services</li>
+<li>configure a bunch of stuff</li>
+<li>and assemble it all in a Linux filesystem.</li>
+
+</ul>
+
+</aside>
+
+<div class="org-src-container">
+<label class="org-src-name">Build an image:</label>
+<pre  class="src src-bash"   ><code trim><span style="color: #81a2be;">nix</span> build .<span style="color: #969896;">#images.neon</span>
+</code></pre>
+</div>
+
+<div class="org-src-container">
+<label class="org-src-name">Update live installation (over SSH):</label>
+<pre  class="src src-bash"   ><code trim><span style="color: #81a2be;">nixos-rebuild</span> <span style="color: #de935f;">--flake</span> <span style="color: #b5bd68;">'.#neon'</span> switch \
+    <span style="color: #de935f;">--target-host</span> root@neon <span style="color: #de935f;">--build-host</span> localhost \
+    <span style="color: #de935f;">--use-remote-sudo</span> <span style="color: #de935f;">-L</span>
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orga515b56">
+<h2 id="orga515b56">Questions?</h2>
+<ul>
+<li><a href="https://github.com/c0deaddict/neon-display">https://github.com/c0deaddict/neon-display</a></li>
+<li><b>mail:</b> jos@codeaddict.org</li>
+<li><b>matrix:</b> @jos:codeaddict.org</li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="./reveal.js-4.3.1/dist/reveal.js"></script>
+<script src="./reveal.js-4.3.1/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js-4.3.1/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js-4.3.1/plugin/notes/notes.js"></script>
+
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+plugins: [RevealMarkdown, RevealZoom, RevealNotes]
+});
+
+</script>
+</body>
+</html>

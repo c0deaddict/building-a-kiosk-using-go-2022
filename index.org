@@ -1,0 +1,436 @@
+#+OPTIONS: num:nil date:nil toc:nil
+#+REVEAL_ROOT: ./reveal.js-4.3.1
+#+REVEAL_TRANS: slide
+#+REVEAL_THEME: black
+#+REVEAL_EXTRA_CSS: custom.css
+#+Title: Building a kiosk using Go
+#+Author: Jos van Bakel
+#+Email: jos@codeaddict.org
+#+Date: 2022-06-08
+
+#+REVEAL_TITLE_SLIDE_BACKGROUND: ./images/title-screen.jpg
+#+REVEAL_TITLE_SLIDE: <h1 class="title">%t</h1>
+#+REVEAL_TITLE_SLIDE: <h2 class="author">%a</h2>
+
+# for different Themes see:
+# https://revealjs.com/?transition=none#/themes
+
+# press 's' for the speaker notes.
+
+* About me
+
+#+ATTR_REVEAL: :frag (appear)
+- Nerd
+- Electronics hobbyist
+- System engineer at Spindle
+- NixOS fanboy
+
+* Agenda
+
+#+begin_notes
+I've build a kiosk using Go. Here are some of my learnings.
+
+Confession: I use this in my home, not really "on the job", but you *could* use this on the job! ;)
+#+end_notes
+
+- What is a kiosk?
+- How does it work?
+- Why Go?
+- Learnings
+
+* What is a kiosk?
+
+#+ATTR_HTML: :width 75% :height 75%
+[[./images/dashboard.jpg]]
+
+* What is a kiosk?
+
+#+ATTR_HTML: :width 75% :height 75%
+[[./images/photos.jpg]]
+
+* What is a kiosk?
+
+#+ATTR_HTML: :width 75% :height 75%
+[[./images/leds.jpg]]
+
+* What is a kiosk?
+
+#+ATTR_HTML: :width 75% :height 75%
+[[./images/back.jpg]]
+
+#+begin_notes
+backside:
+  - raspberry pi
+  - pic from back
+  - yellow/red buttons
+  - motion sensor (pir)
+  - led strip
+#+end_notes
+
+* How does it work?
+
+#+begin_notes
+- over engineered.. for learning
+- mention: cage (wayland) https://www.hjdskes.nl/projects/cage/
+#+end_notes
+
+#+begin_src plantuml :file images/archtecture.svg
+  [chromium] <.right.> [display] : HTTP + WebSocket
+  [display] <..> [hal] : gRPC over unix socket
+  [hal] <.. Buttons
+  [hal] <.. Motion
+  [hal] ..> LEDS
+
+  interface "Display power" as D
+  [hal] ..> D
+
+  note bottom of [chromium]
+    React frontend
+    Listens on websocket for commands
+  end note
+
+  note right of [hal]
+    Hardware abstraction layer
+    Runs as root
+  end note
+
+  note right of [display]
+    Controls content on displays
+    Reacts to events
+    Runs as restricted user
+  end note
+#+end_src
+
+#+ATTR_HTML: :width 75% :height 75%
+#+RESULTS:
+[[file:images/archtecture.svg]]
+
+* Why Go?
+
+#+begin_notes
+- first version was in Python, worked okay for a few years, but adding LEDs was difficult.
+- problems would surface during runtime => not a compiled language
+- updating the OS (Raspbian) broke stuff from time to time
+- now build on NixOS, fully declarative
+- also tried Rust, but that is difficult with the type signatures, and i missed channels
+
+- and now i'm going to talk about the learnings i had from this project.
+#+end_notes
+
+- Nice language: small syntax and typed
+- Good libraries for GPIO and WS2812
+- Cross compiles to =aarch64-linux=
+- Good Nix support
+
+* gRPC
+
+#+begin_notes
+first learning is that grpc is awesome!
+
+- streams can be be passed from client to server
+- and/or can be returned from the server to client
+- streams run until either side closes the stream
+- in the next slide i'll show an example of i used a stream.
+#+end_notes
+
+- gRPC Remote Procedure Calls
+- Communication between =hal= and =display=
+- Describe protocol in =protobuf=
+- Generate client/server code for almost any language
+- gRPC supports streams!
+
+** protobuf
+
+#+begin_notes
+the protocol is defined in protobuf.
+#+end_notes
+
+#+begin_src protobuf
+  service Hal {
+    rpc WatchEvents(google.protobuf.Empty) returns (stream Event) {}
+    // ...
+  }
+
+  message Event {
+    EventSource source = 1;
+    bool state = 2;
+  }
+
+  enum EventSource {
+    Pir = 0 [(name) = "pir"];
+    RedButton = 1 [(name) = "red_button"];
+    YellowButton = 2 [(name) = "yellow_button"];
+  }
+#+end_src
+
+** Server
+
+#+begin_notes
+- listens on unix socket
+- tcp can also be used as a transport for grpc
+#+end_notes
+
+#+begin_src go
+  func (h *Hal) Run() {
+      addr, err := net.ResolveUnixAddr("unix", h.SocketPath)
+      lis, err := net.ListenUnix("unix", addr)
+      h.server = grpc.NewServer()
+      pb.RegisterHalServer(h.server, h)
+      h.server.Serve(lis)
+  }
+
+  func (h *Hal) WatchEvents(_ *emptypb.Empty, stream pb.Hal_WatchEventsServer) error {
+      h.addWatcher(stream)
+      <-stream.Context().Done()
+      h.removeWatcher(stream)
+      return nil
+  }
+#+end_src
+
+** Publish event
+
+#+begin_notes
+note: left out locking on h.watchers for brevity.
+gpiod library is amazing, native go library for accessing gpio
+it even has debouncing build in: gpiod.WithDebounce(delay)
+https://github.com/warthog618/gpiod
+#+end_notes
+
+#+begin_src go
+  gpiod.RequestLine(gpioDevice, pirPin,
+      gpiod.WithBothEdges,
+      gpiod.WithEventHandler(func(evt gpiod.LineEvent) {
+          event := pb.Event{
+              Source: pb.EventSource_Pir,
+              State:  evt.Type == gpiod.LineEventRisingEdge,
+          }
+          for _, w := range h.watchers {
+              w.Send(&event)
+          }
+      }))
+#+end_src
+
+** Client
+
+#+begin_src go
+  conn, err := grpc.Dial(
+      d.config.HalSocketPath,
+      grpc.WithInsecure(),
+      grpc.WithDialer(func(addr string, timeout time.Duration) (net.Conn, error) {
+          return net.DialTimeout("unix", addr, timeout)
+      }))
+
+  defer conn.Close()
+  d.hal = pb.NewHalClient(conn)
+
+  // Watch events from HAL and process them.
+  stream, err := d.hal.WatchEvents(ctx, &emptypb.Empty{})
+  for {
+      event, err := stream.Recv()
+      // Handle event.
+  }
+#+end_src
+
+** Go generate
+
+#+ATTR_REVEAL: :code_attribs data-wrap='wrap'
+#+caption: =hal_proto/generate.go=
+#+begin_src go
+  //go:generate protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative hal_proto.proto
+  package hal_proto
+#+end_src
+
+#+caption: then run:
+#+begin_src bash
+go generate -x -v hal_proto/generate.go
+#+end_src
+
+* Websocket server
+
+#+begin_notes
+- you probably already know Gin Gonic, it's an awesome web framework, and it's very fast.
+- Gin doesn't have support for websockets,
+- but Gorilla can be used for that.
+#+end_notes
+
+#+begin_src go
+    r.GET("/ws", func(c *gin.Context) {
+      upgrader := websocket.Upgrader{}
+      conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+      defer conn.Close()
+      d.addClient(conn)
+
+      for {
+          messageType, message, err := conn.ReadMessage()
+          if websocket.IsCloseError(err, websocket.CloseGoingAway, ...) {
+              break
+          }
+          // Handle message.
+      }
+
+      d.removeClient(conn)
+    })
+#+end_src
+
+* +Streaming+ files over HTTP
+
+#+begin_notes
+- added support for showing video's on the display
+- Gin's r.StaticFS doesn't support streaming ranges, thus the browser will fetch the entire video file before playing.
+#+end_notes
+
+#+begin_src go
+  r.StaticFS("/video", http.Dir(d.config.VideosPath))
+#+end_src
+
+** Streaming with http.ServeFile
+
+#+begin_notes
+- Go's builtin webserver does support this! with =http.ServeFile=
+- getting video acceleration to work on the Pi (in 64bit) proved too difficult
+#+end_notes
+
+#+begin_src go
+  r.GET("/video/:name", func(c *gin.Context) {
+      name := c.Param("name")
+      filepath := path.Join(d.config.VideosPath, name)
+      http.ServeFile(c.Writer, c.Request, filepath)
+  })
+#+end_src
+
+* Embedded static frontend
+
+#+begin_notes
+- using go:embed frontend files can be embedded in the go binary.
+- probably not a good idea for production (use a static file server or CDN)
+- but great for these simple projects!
+#+end_notes
+
+- Run =esbuild= before =go build=.
+- In the frontend directory there is one go file:
+
+#+begin_src go
+  package frontend
+
+  import (
+      "embed"
+  )
+
+  //go:embed dist/**
+  var Assets embed.FS
+#+end_src
+
+
+** Serve static files
+
+#+begin_notes
+- frontend.Assets contains all files in the dist folder.
+- they can be served with =http.FS=
+#+end_notes
+
+#+begin_src go
+  fsys, err := fs.Sub(frontend.Assets, "dist")
+  r.NoRoute(func(c *gin.Context) {
+      c.FileFromFS(c.Request.URL.Path, http.FS(fsys))
+  })
+#+end_src
+
+* Nix(OS)
+
+#+begin_notes
+- linux distribution
+- build on the Nix package manager
+- reproducible builds and deployments
+- why for this project?
+  - most of my systems run NixOS
+  - declarative
+  - wireless password
+  - samba mounts
+  - all baked into one image
+  - one command to build
+  - can build on x86 (with cross compilation or emulation in qemu)
+#+end_notes
+
+[[./images/nix.svg]]
+
+** Nix package
+
+#+begin_notes
+- includes system libraries (like rpi_ws281x)
+- can compose different builders
+- "make" on steroids
+#+end_notes
+
+#+begin_src nix
+  buildGoModule rec {
+    name = "neon-display";
+    version = "0.0.1";
+    src = ../..;
+    vendorSha256 = "sha256-WqdXu2yO...";
+    propagatedBuildInputs = [ rpi_ws281x ];
+    subPackages = [ "cmd/hal" "cmd/display" ];
+
+    NIX_CFLAGS_COMPILE = "-I${rpi_ws281x}/include/ws2811";
+    NIX_LDFLAGS_COMPILE = "-L${rpi_ws281x}/lib";
+
+    preBuild = ''
+      cp -r ${neon-display-frontend} frontend/dist
+    '';
+  }
+#+end_src
+
+** NixOS module
+
+#+begin_notes
+- module abstracts deployment configuration
+- like salt/puppet/etc.
+- creates two systemd units: neon-display and neon-display-hal
+#+end_notes
+
+#+begin_src nix
+  services.neon-display = {
+    enable = true;
+    user = "display";
+    group = "users";
+    settings = {
+      web_bind = "0.0.0.0";
+      photos_path = "/nas/Pics/Photos";
+      off_timeout = 120; # seconds
+      sites = [
+        {
+          title = "Live";
+          url = "http://mon.home.lan/...";
+        }
+      ];
+    };
+  };
+#+end_src
+
+** Deployment
+
+#+begin_notes
+one command to:
+- build Go package
+- build React frontend
+- create two systemd services
+- configure a bunch of stuff
+- and assemble it all in a Linux filesystem.
+#+end_notes
+
+#+caption: Build an image:
+#+begin_src bash
+  nix build .#images.neon
+#+end_src
+
+#+caption: Update live installation (over SSH):
+#+begin_src bash
+   nixos-rebuild --flake '.#neon' switch \
+       --target-host root@neon --build-host localhost \
+       --use-remote-sudo -L
+#+end_src
+
+* Questions?
+
+- https://github.com/c0deaddict/neon-display
+- *mail:* jos@codeaddict.org
+- *matrix:* @jos:codeaddict.org
