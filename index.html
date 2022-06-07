@@ -9,9 +9,9 @@
 <style type="text/css">
 .underline { text-decoration: underline; }
 </style>
-<link rel="stylesheet" href="./reveal.js-4.3.1/dist/reveal.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css"/>
 
-<link rel="stylesheet" href="./reveal.js-4.3.1/dist/theme/black.css" id="theme"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/black.css" id="theme"/>
 
 <link rel="stylesheet" href="custom.css"/>
 </head>
@@ -23,8 +23,8 @@
 </section>
 
 <section>
-<section id="slide-org422de50">
-<h2 id="org422de50">About me</h2>
+<section id="slide-org8db4b10">
+<h2 id="org8db4b10">About me</h2>
 <ul>
 <li class="fragment appear">Nerd</li>
 <li class="fragment appear">Electronics hobbyist</li>
@@ -36,8 +36,8 @@
 </section>
 </section>
 <section>
-<section id="slide-orga39d74e">
-<h2 id="orga39d74e">Agenda</h2>
+<section id="slide-org1b0a36a">
+<h2 id="org1b0a36a">Agenda</h2>
 <aside class="notes">
 <p>
 I've build a kiosk using Go. Here are some of my learnings.
@@ -60,10 +60,10 @@ Confession: I use this in my home, not really "on the job", but you <b>could</b>
 </section>
 </section>
 <section>
-<section id="slide-org6938e61">
-<h2 id="org6938e61">What is a kiosk?</h2>
+<section id="slide-org7278a71">
+<h2 id="org7278a71">What is a kiosk?</h2>
 
-<div id="orgcd89c09" class="figure">
+<div id="orgea6ce6e" class="figure">
 <p><img src="./images/dashboard.jpg" alt="dashboard.jpg" width="75%" height="75%" />
 </p>
 </div>
@@ -71,10 +71,10 @@ Confession: I use this in my home, not really "on the job", but you <b>could</b>
 </section>
 </section>
 <section>
-<section id="slide-orga509fe0">
-<h2 id="orga509fe0">What is a kiosk?</h2>
+<section id="slide-org9f16115">
+<h2 id="org9f16115">What is a kiosk?</h2>
 
-<div id="orgf875186" class="figure">
+<div id="org0b71c0f" class="figure">
 <p><img src="./images/photos.jpg" alt="photos.jpg" width="75%" height="75%" />
 </p>
 </div>
@@ -82,10 +82,10 @@ Confession: I use this in my home, not really "on the job", but you <b>could</b>
 </section>
 </section>
 <section>
-<section id="slide-orgadd6aa1">
-<h2 id="orgadd6aa1">What is a kiosk?</h2>
+<section id="slide-org3d1ee17">
+<h2 id="org3d1ee17">What is a kiosk?</h2>
 
-<div id="org0f76d0a" class="figure">
+<div id="org4f3633d" class="figure">
 <p><img src="./images/leds.jpg" alt="leds.jpg" width="75%" height="75%" />
 </p>
 </div>
@@ -93,10 +93,10 @@ Confession: I use this in my home, not really "on the job", but you <b>could</b>
 </section>
 </section>
 <section>
-<section id="slide-org3343b90">
-<h2 id="org3343b90">What is a kiosk?</h2>
+<section id="slide-orgd1c032b">
+<h2 id="orgd1c032b">What is a kiosk?</h2>
 
-<div id="org7aa8422" class="figure">
+<div id="org6fe3e85" class="figure">
 <p><img src="./images/back.jpg" alt="back.jpg" width="75%" height="75%" />
 </p>
 </div>
@@ -119,8 +119,8 @@ backside:
 </section>
 </section>
 <section>
-<section id="slide-orgbf0bd56">
-<h2 id="orgbf0bd56">How does it work?</h2>
+<section id="slide-org794982b">
+<h2 id="org794982b">How does it work?</h2>
 <aside class="notes">
 <ul>
 <li>over engineered.. for learning</li>
@@ -131,7 +131,7 @@ backside:
 </aside>
 
 
-<div id="org783b048" class="figure">
+<div id="orgefe6a94" class="figure">
 <p><img src="images/archtecture.svg" alt="archtecture.svg" class="org-svg" width="75%" height="75%" />
 </p>
 </div>
@@ -139,8 +139,8 @@ backside:
 </section>
 </section>
 <section>
-<section id="slide-orgb9cb092">
-<h2 id="orgb9cb092">Why Go?</h2>
+<section id="slide-org45f8208">
+<h2 id="org45f8208">Why Go?</h2>
 <aside class="notes">
 <ul>
 <li>first version was in Python, worked okay for a few years, but adding LEDs was difficult.</li>
@@ -166,8 +166,8 @@ backside:
 </section>
 </section>
 <section>
-<section id="slide-org25b5284">
-<h2 id="org25b5284">gRPC</h2>
+<section id="slide-orgc833532">
+<h2 id="orgc833532">gRPC</h2>
 <aside class="notes">
 <p>
 first learning is that grpc is awesome!
@@ -193,8 +193,8 @@ first learning is that grpc is awesome!
 </ul>
 
 </section>
-<section id="slide-orge301226">
-<h3 id="orge301226">protobuf</h3>
+<section id="slide-org6d9422a">
+<h3 id="org6d9422a">protobuf</h3>
 <aside class="notes">
 <p>
 the protocol is defined in protobuf.
@@ -223,8 +223,8 @@ the protocol is defined in protobuf.
 </div>
 
 </section>
-<section id="slide-orgcf1cb8f">
-<h3 id="orgcf1cb8f">Server</h3>
+<section id="slide-org5f63c67">
+<h3 id="org5f63c67">Server</h3>
 <aside class="notes">
 <ul>
 <li>listens on unix socket</li>
@@ -254,8 +254,8 @@ the protocol is defined in protobuf.
 </div>
 
 </section>
-<section id="slide-org6ce39c5">
-<h3 id="org6ce39c5">Publish event</h3>
+<section id="slide-org3ee6254">
+<h3 id="org3ee6254">Publish event</h3>
 <aside class="notes">
 <p>
 note: left out locking on h.watchers for brevity.
@@ -283,8 +283,8 @@ it even has debouncing build in: gpiod.WithDebounce(delay)
 </div>
 
 </section>
-<section id="slide-org8a672df">
-<h3 id="org8a672df">Client</h3>
+<section id="slide-org26a1502">
+<h3 id="org26a1502">Client</h3>
 <div class="org-src-container">
 
 <pre  class="src src-go"   ><code trim><span style="color: #cc6666;">conn</span>, <span style="color: #cc6666;">err</span> <span style="color: #b294bb;">:=</span> grpc.<span style="color: #81a2be; font-style: italic;">Dial</span>(
@@ -307,8 +307,8 @@ d.<span style="color: #de935f; font-style: italic;">hal</span> <span style="colo
 </div>
 
 </section>
-<section id="slide-org029e4c3">
-<h3 id="org029e4c3">Go generate</h3>
+<section id="slide-org7d29622">
+<h3 id="org7d29622">Go generate</h3>
 <div class="org-src-container">
 <label class="org-src-name"><code>hal_proto/generate.go</code></label>
 <pre  class="src src-go"   data-wrap='wrap'><code trim><span style="color: #969896;">//go:generate protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative hal_proto.proto</span>
@@ -325,8 +325,8 @@ d.<span style="color: #de935f; font-style: italic;">hal</span> <span style="colo
 </section>
 </section>
 <section>
-<section id="slide-org850ef38">
-<h2 id="org850ef38">Websocket server</h2>
+<section id="slide-orgab1b163">
+<h2 id="orgab1b163">Websocket server</h2>
 <aside class="notes">
 <ul>
 <li>you probably already know Gin Gonic, it's an awesome web framework, and it's very fast.</li>
@@ -361,8 +361,8 @@ d.<span style="color: #de935f; font-style: italic;">hal</span> <span style="colo
 </section>
 </section>
 <section>
-<section id="slide-orge60a713">
-<h2 id="orge60a713"><del>Streaming</del> files over HTTP</h2>
+<section id="slide-org139c5d7">
+<h2 id="org139c5d7"><del>Streaming</del> files over HTTP</h2>
 <aside class="notes">
 <ul>
 <li>added support for showing video's on the display</li>
@@ -379,8 +379,8 @@ d.<span style="color: #de935f; font-style: italic;">hal</span> <span style="colo
 </div>
 
 </section>
-<section id="slide-org415e30c">
-<h3 id="org415e30c">Streaming with http.ServeFile</h3>
+<section id="slide-orgdf63a0e">
+<h3 id="orgdf63a0e">Streaming with http.ServeFile</h3>
 <aside class="notes">
 <ul>
 <li>Go's builtin webserver does support this! with <code>http.ServeFile</code></li>
@@ -403,8 +403,8 @@ d.<span style="color: #de935f; font-style: italic;">hal</span> <span style="colo
 </section>
 </section>
 <section>
-<section id="slide-org2eb133d">
-<h2 id="org2eb133d">Embedded static frontend</h2>
+<section id="slide-org074b6ec">
+<h2 id="org074b6ec">Embedded static frontend</h2>
 <aside class="notes">
 <ul>
 <li>using go:embed frontend files can be embedded in the go binary.</li>
@@ -436,8 +436,8 @@ d.<span style="color: #de935f; font-style: italic;">hal</span> <span style="colo
 
 
 </section>
-<section id="slide-org3961214">
-<h3 id="org3961214">Serve static files</h3>
+<section id="slide-org1b8894c">
+<h3 id="org1b8894c">Serve static files</h3>
 <aside class="notes">
 <ul>
 <li>frontend.Assets contains all files in the dist folder.</li>
@@ -459,8 +459,8 @@ r.<span style="color: #f0c674;">NoRoute</span>(<span style="color: #b294bb;">fun
 </section>
 </section>
 <section>
-<section id="slide-org2b86c9b">
-<h2 id="org2b86c9b">Nix(OS)</h2>
+<section id="slide-orge3e5817">
+<h2 id="orge3e5817">Nix(OS)</h2>
 <aside class="notes">
 <ul>
 <li>linux distribution</li>
@@ -483,14 +483,14 @@ r.<span style="color: #f0c674;">NoRoute</span>(<span style="color: #b294bb;">fun
 </aside>
 
 
-<div id="org022f325" class="figure">
+<div id="org800ec97" class="figure">
 <p><img src="./images/nix.svg" alt="nix.svg" class="org-svg" />
 </p>
 </div>
 
 </section>
-<section id="slide-org2b9a968">
-<h3 id="org2b9a968">Nix package</h3>
+<section id="slide-orgbb86f81">
+<h3 id="orgbb86f81">Nix package</h3>
 <aside class="notes">
 <ul>
 <li>includes system libraries (like rpi<sub>ws281x</sub>)</li>
@@ -522,8 +522,8 @@ r.<span style="color: #f0c674;">NoRoute</span>(<span style="color: #b294bb;">fun
 </div>
 
 </section>
-<section id="slide-org5fe24bc">
-<h3 id="org5fe24bc">NixOS module</h3>
+<section id="slide-orgf70b8c2">
+<h3 id="orgf70b8c2">NixOS module</h3>
 <aside class="notes">
 <ul>
 <li>module abstracts deployment configuration</li>
@@ -556,8 +556,8 @@ r.<span style="color: #f0c674;">NoRoute</span>(<span style="color: #b294bb;">fun
 </div>
 
 </section>
-<section id="slide-org8c8c557">
-<h3 id="org8c8c557">Deployment</h3>
+<section id="slide-org330f819">
+<h3 id="org330f819">Deployment</h3>
 <aside class="notes">
 <p>
 one command to:
@@ -590,8 +590,8 @@ one command to:
 </section>
 </section>
 <section>
-<section id="slide-orga515b56">
-<h2 id="orga515b56">Questions?</h2>
+<section id="slide-orgd9f595c">
+<h2 id="orgd9f595c">Questions?</h2>
 <ul>
 <li><a href="https://github.com/c0deaddict/neon-display">https://github.com/c0deaddict/neon-display</a></li>
 <li><b>mail:</b> jos@codeaddict.org</li>
@@ -602,10 +602,10 @@ one command to:
 </section>
 </div>
 </div>
-<script src="./reveal.js-4.3.1/dist/reveal.js"></script>
-<script src="./reveal.js-4.3.1/plugin/markdown/markdown.js"></script>
-<script src="./reveal.js-4.3.1/plugin/zoom/zoom.js"></script>
-<script src="./reveal.js-4.3.1/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom/zoom.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/notes/notes.js"></script>
 
 
 <script>
