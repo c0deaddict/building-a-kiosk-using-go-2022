@@ -43,25 +43,24 @@ Confession: I use this in my home, not really "on the job", but you *could* use 
 #+ATTR_HTML: :width 75% :height 75%
 [[./images/dashboard.jpg]]
 
-* What is a kiosk?
+** What is a kiosk?
 
 #+ATTR_HTML: :width 75% :height 75%
 [[./images/photos.jpg]]
 
-* What is a kiosk?
+** What is a kiosk?
 
 #+ATTR_HTML: :width 75% :height 75%
 [[./images/leds.jpg]]
 
-* What is a kiosk?
+** What is a kiosk?
 
 #+ATTR_HTML: :width 75% :height 75%
-[[./images/back.jpg]]
+[[./images/back.png]]
 
 #+begin_notes
 backside:
   - raspberry pi
-  - pic from back
   - yellow/red buttons
   - motion sensor (pir)
   - led strip
